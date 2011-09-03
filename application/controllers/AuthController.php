@@ -3,7 +3,8 @@ class AuthController extends Zend_Controller_Action
 {
     public function indexAction()
     {
-        $hybridauth = $this->getInvokeArg('bootstrap')->getPluginResource('hybridAuth')->getHybridAuth(); 
+        $hybridAuthResource = $this->getInvokeArg('bootstrap')->getPluginResource('hybridAuth');
+        $hybridauth = $hybridAuthResource->getHybridAuth(); 
         if ($hybridauth->hasError()){
             return $this->_helper->redirector('index', 'auth');
         }
@@ -14,7 +15,7 @@ class AuthController extends Zend_Controller_Action
 
         if (isset($_GET["provider"])) {
             $params = array(); 
-            $params["hauth_return_to"] = 'http://pet-tricks.ip.evan.pro/auth';//$hybridauth->getCurrentUrl();
+            $params["hauth_return_to"] = $hybridAuthResource->getReturnUrl();
             $provider = @$_REQUEST["provider"];
             $provider_adapter = $hybridauth->setup($provider, $params);
 

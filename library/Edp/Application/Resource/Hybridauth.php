@@ -4,6 +4,8 @@ class Edp_Application_Resource_Hybridauth
 {
     protected $_hybridAuth;
 
+    protected $_returnUrl;
+
     public function init()
     {
         $this->getBootstrap()->bootstrap('session');
@@ -12,6 +14,8 @@ class Edp_Application_Resource_Hybridauth
         Zend_Session::start();
         require_once LIBRARY_PATH . '/hybridauth/hybridauth.php';
         $this->setHybridAuth(new Hybrid_Auth());
+        $options = $this->getOptions();
+        $this->setReturnUrl($options['returnUrl']);
         return $this->getHybridAuth();
     }
  
@@ -33,6 +37,27 @@ class Edp_Application_Resource_Hybridauth
     public function setHybridAuth($hybridAuth)
     {
         $this->_hybridAuth = $hybridAuth;
+        return $this;
+    }
+ 
+    /**
+     * Get returnUrl.
+     *
+     * @return returnUrl
+     */
+    public function getReturnUrl()
+    {
+        return $this->_returnUrl;
+    }
+ 
+    /**
+     * Set returnUrl.
+     *
+     * @param $returnUrl the value to be set
+     */
+    public function setReturnUrl($returnUrl)
+    {
+        $this->_returnUrl = $returnUrl;
         return $this;
     }
 }
