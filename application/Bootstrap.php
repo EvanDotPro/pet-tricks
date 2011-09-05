@@ -2,6 +2,14 @@
 class Bootstrap
     extends Zend_Application_Bootstrap_Bootstrap
 {
-    // This only exists because the ZF Bootstrap object uses reflection for the 
-    // module path to set up the autoloader.
+    /**
+     * Initialize database
+     *
+     * @return void
+     */
+    protected function _initDatabase()
+    {
+        $this->bootstrap('db');
+        Edp_Model_Mapper_DbAbstract::setDefaultAdapter($this->getResource('db'));
+    }
 }

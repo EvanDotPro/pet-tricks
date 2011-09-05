@@ -9,8 +9,6 @@ class Edp_Application_Resource_Hybridauth
     public function init()
     {
         $this->getBootstrap()->bootstrap('session');
-        //$session = $this->getBootstrap()->getPluginResource('session'); 
-        //$session->init(); 
         Zend_Session::start();
         require_once LIBRARY_PATH . '/hybridauth/hybridauth.php';
         $this->setHybridAuth(new Hybrid_Auth());
