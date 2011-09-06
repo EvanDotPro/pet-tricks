@@ -3,7 +3,7 @@ class Default_Model_Mapper_User
     extends Edp_Model_Mapper_DbAbstract
 {
     protected $_name = 'user';
-    protected $_modelClass = 'Application_Model_User';
+    protected $_modelClass = 'Default_Model_User';
 
     protected $_fields;
 
@@ -38,24 +38,25 @@ class Default_Model_Mapper_User
     public function insert(Default_Model_User $user)
     {
         $data = array(
-            'user_id'       => $user->getUserId(),
-            'email'         => $user->getEmail(),
-            'display_name'  => $user->getDisplayName(),
-            'language'      => $user->getLanguage(),
-            'register_time' => new Zend_Db_Expr('NOW()'),
-            'register_ip'   => new Zend_Db_Expr("INET_ATON('{$_SERVER['REMOTE_ADDR']}')"),
+            'user_id'             => $user->getUserId(),
+            'email'               => $user->getEmail(),
+            'display_name'        => $user->getDisplayName(),
+            'language'            => $user->getLanguage(),
+            'register_time'       => new Zend_Db_Expr('NOW()'),
+            'register_ip'         => new Zend_Db_Expr("INET_ATON('{$_SERVER['REMOTE_ADDR']}')"),
+            'authentication_type' => $user->getAuthenticationType(),
+            'uid'                 => $user->getUid(),
+            'provider_uid'        => $user->getProviderUid(),
         );
         $db = $this->getWriteAdapter();
         $db->insert($this->getTableName(), $data);
         $userId = $db->lastInsertId();
         $user->setUserId($userId);
         $this->updateUserRoles($user);
-
-        foreach ($user->getSettings() as $k => $v) {
-            $this->insertUserSetting($user, $k, $v);
-        }
-
-        return $userId;
+        //foreach ($user->getSettings() as $k => $v) {
+        //    $this->insertUserSetting($user, $k, $v);
+        //}
+        return $user;
     }
 
     public function updateUserRoles($user)
@@ -76,6 +77,18 @@ class Default_Model_Mapper_User
             'last_login' => new Zend_Db_Expr('NOW()'),
             'last_ip'    => new Zend_Db_Expr("INET_ATON('{$_SERVER['REMOTE_ADDR']}')")
         );
+        if ($user->getAuthenticationType()) {
+            $data['authentication_type'] = $user->getAuthenticationType();
+        }
+        if ($user->getUid()) {
+            $data['uid'] = $user->getUid();
+        }
+        if ($user->getProviderUid()) {
+            $data['provider_uid'] = $user->getProviderUid();
+        }
+        if ($user->getTimestamp()) {
+            $data['timestamp'] = new Zend_Db_Expr('NOW()');
+        }
         $db = $this->getWriteAdapter();
         return $db->update($this->getTableName(), $data, $db->quoteInto('user_id = ?', $user->getUserId()));
     }

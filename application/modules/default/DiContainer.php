@@ -56,4 +56,54 @@ class Default_DiContainer
         }
         return $this->_storage['hybridAuth'];
     }
+
+    /**
+     * Get the role service
+     *
+     * @return Default_Service_Role
+     */
+    public function getRoleService()
+    {
+        if (!isset($this->_storage['roleService'])) {
+            $this->_storage['roleService'] = new Default_Service_Role($this->getRoleMapper());
+        }
+        return $this->_storage['roleService'];
+    }
+
+    /**
+     * Get the role mapper
+     *
+     * @return Default_Model_Mapper_Role
+     */
+    public function getRoleMapper()
+    {
+        if (!isset($this->_storage['roleMapper'])) {
+            $this->_storage['roleMapper'] = new Default_Model_Mapper_Role();
+        }
+        return $this->_storage['roleMapper'];
+    }
+
+    public function getAclService()
+    {
+        if (!isset($this->_storage['aclService'])) {
+            $this->_storage['aclService'] = new Default_Service_Acl();
+        }
+        return $this->_storage['aclService'];
+    }
+
+    public function getAclMapper()
+    {
+        if (!isset($this->_storage['aclMapper'])) {
+            $this->_storage['aclMapper'] = new Default_Model_Mapper_AclRecord();
+        }
+        return $this->_storage['aclMapper'];
+    }
+
+    public function getAclResourceRecordMapper()
+    {
+        if (!isset($this->_storage['aclResourceRecordMapper'])) {
+            $this->_storage['aclResourceRecordMapper'] = new Default_Model_Mapper_AclResourceRecord();
+        }
+        return $this->_storage['aclResourceRecordMapper'];
+    }
 }

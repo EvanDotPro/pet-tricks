@@ -4,6 +4,14 @@
         <?= $this->headTitle('Pet Tricks') ?> 
     </head>
     <body>
+        <div id="header">
+            <? if(Zend_Registry::get('Default_DiContainer')->getAclService()->isAllowed('user', 'logout')): ?>
+                Signed in as <?= Zend_Auth::getInstance()->getIdentity()->getDisplayName(); ?> 
+                | <a href="<?=$this->url(array('controller'=>'auth','action'=>'logout'), null, true);?>"><?= $this->translate('Sign Out'); ?></a>
+            <?php else: ?>
+                <a href="<?=$this->url(array('controller'=>'auth','action'=>'google'), null, true);?>"><?= $this->translate('Sign In'); ?></a> 
+            <?php endif; ?>
+        </div>
         <?php echo $this->layout()->content; ?>
     </body>
 </html>

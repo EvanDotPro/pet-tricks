@@ -66,6 +66,31 @@ class Default_Model_User
     protected $_registerIp;
 
     /**
+     * _authenticationType 
+     * 
+     * @var string
+     */
+    protected $_authenticationType;
+    /**
+     * _uid 
+     * 
+     * @var string
+     */
+    protected $_uid;
+    /**
+     * _providerUid 
+     * 
+     * @var string
+     */
+    protected $_providerUid;
+    /**
+     * _timestamp 
+     * 
+     * @var DateTime
+     */
+    protected $_timestamp;
+
+    /**
      * Get userId.
      *
      * @return userId
@@ -150,9 +175,40 @@ class Default_Model_User
     }
  
     /**
-     * Get roles.
+     * Add a role to this user
      *
-     * @return roles
+     * @param int|Default_Model_Role $role
+     */
+    public function addRole($role)
+    {
+        $role = Zend_Registry::get('Default_DiContainer')->getRoleService()->getRoleDetect($role);
+        $this->_roles[$role->getRoleId()] = $role;
+
+        return $this;
+    }
+
+    /**
+     * hasRole 
+     * 
+     * @param Default_Model_Role|int|string $role 
+     * @return void
+     */
+    public function hasRole($role)
+    {
+        $role = Zend_Registry::get('Default_DiContainer')->getRoleService()->getRoleDetect($role);
+        foreach ($this->_roles as $r) {
+            if ($role->getName() === $r->getName()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+ 
+    /**
+     * Get all roles.
+     *
+     * @return array
      */
     public function getRoles()
     {
@@ -160,16 +216,16 @@ class Default_Model_User
     }
  
     /**
-     * Set roles.
+     * Set role.
      *
-     * @param $roles the value to be set
+     * @param array $roles
      */
-    public function setRoles($roles)
+    public function setRoles(array $roles)
     {
-        $this->_roles = $roles;
+        $this->_roles = Zend_Registry::get('Default_DiContainer')->getRoleService()->getRoleDetect($roles);
         return $this;
     }
- 
+
     /**
      * Get lastLogin.
      *
@@ -251,6 +307,91 @@ class Default_Model_User
     public function setRegisterIp($registerIp)
     {
         $this->_registerIp = $registerIp;
+        return $this;
+    }
+ 
+    /**
+     * Get authenticationType.
+     *
+     * @return authenticationType
+     */
+    public function getAuthenticationType()
+    {
+        return $this->_authenticationType;
+    }
+ 
+    /**
+     * Set authenticationType.
+     *
+     * @param $authenticationType the value to be set
+     */
+    public function setAuthenticationType($authenticationType)
+    {
+        $this->_authenticationType = strtolower($authenticationType);
+        return $this;
+    }
+ 
+    /**
+     * Get uid.
+     *
+     * @return uid
+     */
+    public function getUid()
+    {
+        return $this->_uid;
+    }
+ 
+    /**
+     * Set uid.
+     *
+     * @param $uid the value to be set
+     */
+    public function setUid($uid)
+    {
+        $this->_uid = $uid;
+        return $this;
+    }
+ 
+    /**
+     * Get providerUid.
+     *
+     * @return providerUid
+     */
+    public function getProviderUid()
+    {
+        return $this->_providerUid;
+    }
+ 
+    /**
+     * Set providerUid.
+     *
+     * @param $providerUid the value to be set
+     */
+    public function setProviderUid($providerUid)
+    {
+        $this->_providerUid = $providerUid;
+        return $this;
+    }
+ 
+    /**
+     * Get timestamp.
+     *
+     * @return timestamp
+     */
+    public function getTimestamp()
+    {
+        return $this->_timestamp;
+    }
+ 
+    /**
+     * Set timestamp.
+     *
+     * @param $timestamp the value to be set
+     */
+    public function setTimestamp($timestamp)
+    {
+        if (is_numeric($timestamp)) $timestamp = '@'.$timestamp;
+        $this->_timestamp = new DateTime($timestamp);
         return $this;
     }
 }

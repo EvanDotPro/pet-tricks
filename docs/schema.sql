@@ -268,19 +268,13 @@ CREATE TABLE user (
   language VARCHAR(255) DEFAULT NULL,
   last_login DATETIME DEFAULT NULL,
   last_ip INTEGER DEFAULT NULL,
+  timestamp DATETIME DEFAULT NULL,
   register_time DATETIME NOT NULL,
   register_ip INTEGER NOT NULL,
+  authentication_type ENUM('google','facebook', 'openid') DEFAULT NULL,
+  uid VARCHAR(255) DEFAULT NULL,
+  provider_uid VARCHAR(255) DEFAULT NULL,
   UNIQUE (email)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE hybrid_auth (
-  user_id INTEGER UNSIGNED NOT NULL,
-  authentication_type ENUM('google','facebook', 'openid') NOT NULL DEFAULT 'google',
-  uid VARCHAR(255) NOT NULL,
-  provider_uid VARCHAR(255) NOT NULL,
-  timestamp DATETIME DEFAULT NULL,
-  PRIMARY KEY (user_id,authentication_type),
-  FOREIGN KEY (user_id) REFERENCES user(user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE pet_owner (
@@ -327,6 +321,16 @@ CREATE TABLE acl_record (
   UNIQUE KEY role_resource_action (role_id,resource,action),
   FOREIGN KEY (role_id) REFERENCES user_role(role_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+INSERT INTO `acl_record` (`role_id`, `resource`, `action`, `type`) VALUES
+-- GUEST PERMISSIONS
+(1,  NULL,         'view',          'allow'),
+(1,  NULL,         'list',          'allow'),
+(1,  'user',       'login',         'allow'),
+-- ADMIN PERMISSIONS
+(2,  NULL,         NULL,            'allow'),
+-- USER PERMISSIONS
+(3,  'user',       'login',         'deny'),
+(3,  'user',       'logout',        'allow');
 
 CREATE TABLE acl_resource_record (
   role_id INTEGER UNSIGNED NOT NULL,

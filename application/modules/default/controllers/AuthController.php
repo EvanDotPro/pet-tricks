@@ -3,7 +3,17 @@ class Default_AuthController extends Zend_Controller_Action
 {
     public function indexAction()
     {
+        if ($this->_authenticate()) {
+            return $this->_helper->redirector('index','user');
+        }
         $this->view->auth = $this->_authenticate();
+    }
+
+    public function logoutAction()
+    {
+        $userService = Zend_Registry::get('Default_DiContainer')->getUserService();
+        $userService->logout();
+        return $this->_helper->redirector('index','auth');
     }
 
     public function googleAction()
